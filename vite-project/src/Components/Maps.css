@@ -1,0 +1,13 @@
+.Maps {
+    font-family: sans-serif;
+    text-align: center;
+  }
+  
+  body {
+    margin: 0px
+  }
+
+.map{
+    height: 7vh;
+    width: 40vw;
+}
