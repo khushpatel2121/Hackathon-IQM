@@ -15,7 +15,7 @@ display: flex;
 background-color: white;
 border-top-left-radius: 20px;
 border-top-right-radius: 20px;
-margin-top: 10px;
+
 `
 const Left = styled.div`
 flex: 1;
@@ -117,8 +117,7 @@ There are many variations of passages of Lorem Ipsum available, but
         </ContactItem>
         <Payment src="https://i.ibb.co/Qfvn4z6/payment.png" />
     </Right>
-    
-</Container>
+  </Container>
   )
 }
 

@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useEffect , useState} from 'react'
 import styled from 'styled-components'
 import Announcement from '../Components/Announcement'
 import Navbar from '../Components/Navbar'
 import Footer from '../Components/footer'
+import { useLocation } from 'react-router-dom'
+import axios from 'axios'
 
 const Container = styled.div`
 
@@ -79,6 +81,23 @@ user-select: none;
 
 
 const NewProduct = () => {
+
+  const [product, setProduct] = useState({})
+
+  const location = useLocation();
+
+  const id = location.pathname.split("/")[2];
+  console.log(id);
+
+  useEffect(()=>{
+    const getProduct = async () => {
+      const res = await axios.get("http://localhost:8080/api/book/find/" + id);
+      setProduct(res.data);
+      console.log(res.data);
+    }
+    getProduct();
+  },[id])
+
   return (
     <div>
     <Announcement/>
@@ -87,18 +106,20 @@ const NewProduct = () => {
     <Wrapper>
       <Left>
         <ImageContainer>
-          <Image src="https://d28hgpri8am2if.cloudfront.net/book_images/onix/cvr9798887620237/bhagavad-gita-9798887620237_hr.jpg"/>
+          <Image src={product.image}/>
         </ImageContainer>
       </Left>
       <Right>
       <Info>
-        <Title>The Bhagvat Geeta</Title>
-        <Author><Span>Author:</Span>Vyasa</Author>
-        <Author><Span>Genre:</Span>Religious Scripture</Author>
+        <Title>{product.title}</Title>
+        <Author><Span>Author:</Span>{product.author}</Author>
+        <Author><Span>Genre:</Span>{product.genre}</Author>
         <Description>
 
         <TDesc><Span>Book Description:</Span></TDesc>
-        <Desc>Bhagavadgita, (Sanskrit: “Song of God”) an episode recorded in the great Sanskrit poem of the Hindus, the Mahabharata. It occupies chapters 23 to 40 of Book VI of the Mahabharata and is composed in the form of a dialogue between Prince Arjuna and Krishna, an avatar (incarnation) of the god Vishnu.</Desc>
+        <Desc>
+        {product.description}
+        </Desc>
         </Description>
         <Buttion>Add to Cart</Buttion>
         

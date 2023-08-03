@@ -1,6 +1,8 @@
-import React from 'react'
+import React,{useState} from 'react'
 import styled from 'styled-components'
-import book1 from "../assets/undraw_road_to_knowledge_m8s0.svg"
+import book1 from "../assets/undraw_road_to_knowledge_m8s0.svg";
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Register  = styled.div`
 width: 100vw;
@@ -71,8 +73,32 @@ z-index: 9999;
 
 
 const register = () => {
+    const [credentials, setCredentials] = useState({
+        username:undefined,
+        email:undefined,
+        password:undefined,
+      });
 
-    const OTP = true;
+      const handleChange = (e) => {
+        setCredentials((prev)=>({...prev,[e.target.id]:e.target.value}))
+      }
+
+
+        
+      const navigate = useNavigate();
+
+      const handleRegister = async (e) => {
+        e.preventDefault();
+        try{
+        const res = await axios.post("http://localhost:8080/api/auth/register/",credentials);
+        console.log(res);
+        navigate('/login');
+        }
+        catch(err){
+          console.log(err);
+        }
+      }
+
   return (
     <div>
       <Register>
@@ -84,10 +110,10 @@ const register = () => {
             <Title>
                 Register
              </Title>
-                <Input placeholder="Username"/>
-                <Input placeholder="Email"/>
-                <Input placeholder="Password" type='password'/>
-               <Send>Submit</Send>
+                <Input placeholder="Username" id='username' onChange={handleChange}/>
+                <Input placeholder="Email" id="email" onChange={handleChange}/>
+                <Input placeholder="Password" type='password' id="password" onChange={handleChange}/>
+               <Send onClick={handleRegister}>Submit</Send>
             </Right>
         </Wrapper>
       </Register>

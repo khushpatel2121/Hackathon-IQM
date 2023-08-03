@@ -6,7 +6,8 @@ import SearchOutlined from "@mui/icons-material/SearchOutlined";
 import { Badge } from "@mui/material";
 import { Link } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-// import {useSelector} from "react-redux"
+
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
   background-color: #f0eee2;
@@ -71,8 +72,8 @@ const RLink = styled(Link)`
 
 const Navbar = () => {
   // const quantity  = useSelector(state=>state.cart.quantity)
+  const {currentUser} = useSelector((state) => state.user);
 
-  const user = false;
   return (
     <Container>
       <Wrapper>
@@ -89,7 +90,7 @@ const Navbar = () => {
           </SearchContainer>
         </Center>
         <Right>
-          {user ? (
+          {currentUser ? (
             <>
             <MenuItem>
 

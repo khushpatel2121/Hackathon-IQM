@@ -9,7 +9,7 @@ export const sliderItems = [
        Desc : "Best book on selling",
        title :"Little red book of selling",
        TitleBg:"red",
-       bg:"F5F5F5"
+       bg:"F2EE9D"
     },
     {
        id : 2,

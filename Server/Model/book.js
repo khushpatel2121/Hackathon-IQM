@@ -23,16 +23,16 @@ const BookSchema = new mongoose.Schema({
         require:true,
     },
     price:{
-        type:Number,
+        type:String,
         require:true,
     },
     rating:{
         type:Number,
-        require:true,
+    
     },
     reviews:{
         type:Array,
-        require:true,
+    
     },
     
     },{timestamps:true});

@@ -129,10 +129,10 @@ const ProductPrice = styled.div`
   font-weight: 200;
   `
 const Hr = styled.hr`
-  background-color: #eee;
+  background-color: grey;
   border: none;
   height: 1px;
-  width: 90%;
+  
 `;
 
 const Summary = styled.div`

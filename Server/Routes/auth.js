@@ -34,7 +34,7 @@ router.post("/login" , async(req,res,next)=>{
 
       const token = jwt.sign({ id: user._id }, process.env.JWT);
 
-      const { password, username, ...others } = user._doc;
+      const { password, ...others } = user._doc;
       res
         .cookie("access_token", token, {
           httpOnly: true,

@@ -7,6 +7,10 @@ import Switch from "react-switch";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Popup from '../Components/Popup';
 import Maps from '../Components/Maps';
+import { useSelector } from 'react-redux/es/hooks/useSelector';
+import { useDispatch } from 'react-redux';
+import { logout } from '../redux/userSlice';
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div` 
 margin-top: 50px;
@@ -47,7 +51,8 @@ justify-content: center;
 const Img = styled.img`
 height: 200px;
 width: 200px;
-
+border-radius:100% ;
+object-fit: cover;
 `
 
 const Username = styled.h1``
@@ -146,9 +151,20 @@ padding: 10px;
 gap: 10px;
 cursor: pointer;
 `
+const Button = styled.button`
+border: none;
+background-color: #6d99ef;
+color: white;
+padding: 15px;
+border-radius: 5px;
+cursor: pointer;
+`
+
 
 
 const Profile = () => {
+
+  const {currentUser} = useSelector((state) => state.user);
 
 
     const [click,setClick] = useState(false);
@@ -157,6 +173,15 @@ const Profile = () => {
   const  handleClick = () => setClick(!click);
 
   const handleBook = () => setBook(!book);
+
+  const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+  
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/");
+  }
 
   return (
     <>
@@ -167,7 +192,7 @@ const Profile = () => {
 
     <Top>
  <Left>
-<Img src='https://img.freepik.com/free-icon/user_318-563642.jpg'/>
+<Img src='https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D'/>
 <Username>
 </Username>
  </Left>
@@ -187,12 +212,12 @@ const Profile = () => {
  <Span>
  Name:
  </Span>
- Khush
+  {currentUser.username}
  </Name>
  <Email>
  <Span>
  Email:</Span>
- khushpatel2121@gamil.com
+  {currentUser.email}
  </Email>
  <Phone>
  <Span>
@@ -206,6 +231,7 @@ Address:
 </Span>
 B-601 Shreeji Heights, Mira Road East, Thane, Maharashtra, 401107
 </Address>
+<Button onClick={handleLogout}>Logout</Button>
 </Details>
 <Maps />
 </Right>
@@ -244,8 +270,9 @@ Books Bought
 }
 
 
-
 {
+  currentUser.isAdmin && (<>
+    {
     click ?(<>
         
 <SButton onClick={handleClick}>
@@ -258,7 +285,9 @@ Books Bought
    <Switch onClick={handleClick}  checked={click} />
 </SButton>
             </>)
+}</>)
 }
+
 {
     click && (<>
          <Add onClick={handleBook}>

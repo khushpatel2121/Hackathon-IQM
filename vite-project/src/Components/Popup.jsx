@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useEffect , useState} from 'react';
 import styled from 'styled-components';
 import CloseIcon from '@mui/icons-material/Close';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import app  from '../../firebase';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
     height: 100vh;
@@ -17,7 +21,7 @@ const Container = styled.div`
 
 
 const Wrapper = styled.div`
-    height: 90vh;
+    height: 95vh;
     width: 50vw;
     background-color:#E5E5DB;
     position: relative;
@@ -74,6 +78,82 @@ right: 20px;
 
 
 const Popup = ({open}) => {
+
+    const [img,setImg] = useState(undefined);
+    const [imgPerc,setImgPerc] = useState(0);
+    const [inputs,setInputs] = useState({});
+    const [price,setPrice] = useState("");
+
+    
+
+    const handleChange = (e)=>{
+        setInputs((prev)=>{
+            return {...prev,[e.target.name]:e.target.value }
+        })
+        
+    }
+
+    console.log(inputs);
+
+    const uploadFile = async (file,fileType) => {
+        const storage = getStorage(app);
+        const fileName = new Date().getTime() + file.name;
+        const storageRef = ref(storage , fileName);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on('state_changed',
+  (snapshot) => {
+    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    fileType && setImgPerc(Math.round(progress))
+    console.log('Upload is ' + progress + '% done');
+    switch (snapshot.state) {
+      case 'paused':
+        console.log('Upload is paused');
+        break;
+      case 'running':
+        console.log('Upload is running');
+        break;
+        default:
+            break;
+    }
+  }, 
+  (error) => {},
+  () => {
+    // Upload completed successfully, now we can get the download URL
+    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+        setInputs((prev)=>{
+            return {...prev,[fileType]:downloadURL }
+        })
+        
+      console.log('File available at', downloadURL);
+    });
+  }
+    )}
+
+    useEffect(()=>{
+     img && uploadFile(img, 'image');
+    },[img])
+
+    const navigate = useNavigate();
+
+
+    const addBook = async ()=>{
+
+      try{
+        await axios.post('http://localhost:8080/api/book',{...inputs});
+        
+        navigate("/")
+      }catch(err){
+          console.log(err);
+     
+    }
+  }
+
+    console.log(inputs);
+    console.log(price);
+ 
+
   return (
      <Container>
      <Wrapper>
@@ -82,21 +162,22 @@ const Popup = ({open}) => {
             </Cross>
             <Title>Add new Book</Title>
             <BTitle>Book Name</BTitle>
-            <Input placeholder="Book Name" />
+            <Input placeholder="Book Name"  name='title'    onChange={handleChange}/>
+            <BTitle>Book Image</BTitle>
+          {  imgPerc > 0 ? (<>
+           { imgPerc == 100?(<>Upload Done</>) :(<>Progress : {imgPerc}%
+            <progress value={imgPerc} max="100" /></>)}
+          </>):
+          (<Input type='file' accept='image/*' onChange={e=>setImg(e.target.files[0])} />)}
             <BTitle>Author Name</BTitle>
-            <Input placeholder="Author Name" />
+            <Input placeholder="Author Name"  name='author'    onChange={handleChange}/>
             <BTitle>Book Genre</BTitle>
-            <Input placeholder="Genre" />
+            <Input placeholder="Genre"  name='genre' onChange={handleChange}/>
             <BTitle>Book Description</BTitle>
-            <Input placeholder="Description" />
+            <Input placeholder="Description" name='description'    onChange={handleChange}/>
             <BTitle>Book Price</BTitle>
-            <Input placeholder="₹" />
-            <BTitle>Sell or Rent</BTitle>
-            <Selector>
-                <Option>Sell</Option>
-                <Option>Rent</Option>
-            </Selector>
-           <Button>
+            <Input placeholder="₹"   min="1" name='price' onChange={handleChange} />
+           <Button onClick={addBook}>
             Add Book
            </Button>
      </Wrapper>

@@ -29,7 +29,11 @@ align-items: center;
 gap: 10px;
 `;
 
-const Title = styled.h1``;
+const Title = styled.h1`
+font-size: 100%;
+width: 220px;
+text-align: center;
+`;
 
 const Span = styled.span` 
 font-weight: 900;
@@ -60,22 +64,24 @@ color: inherit;
 
 
 
-const Product = () => {
+const Product = ({item}) => {
+  const id= location.pathname.split("/")[2];
+
   return (
     <>
-    <Rlink to="/product">
+    <Rlink to={`/product/${item._id}`}>
   <Container>
     <ImageContainer>
-      <Image src="https://d28hgpri8am2if.cloudfront.net/book_images/onix/cvr9798887620237/bhagavad-gita-9798887620237_hr.jpg"/>
+      <Image src={item.image}/>
     </ImageContainer>
     <Info>
 
       <Title>
-      Zero to One
+      {item.title}
       </Title>
-      <Author><Span>Author:</Span>Peter Thiel</Author>
+      <Author><Span>Author:</Span>{item.author}</Author>
       
-      <Price>₹ 200</Price>
+      <Price>₹ {item.price}</Price>
       <Button>Shop Now</Button>
     </Info>
     </Container>

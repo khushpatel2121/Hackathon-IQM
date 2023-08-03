@@ -32,7 +32,7 @@ mongoose.connection.on("connected",()=>{
 
 app.use(cookieParser());
 app.use(express.json());
-
+app.use(cors());
 app.use("/api/auth",authRouter);
 app.use("/api/book",bookRouter);
 app.use("/api/user",userRouter);
